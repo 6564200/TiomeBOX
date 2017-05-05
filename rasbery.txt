@@ -1,0 +1,315 @@
+sudo raspi-config - первоначальна€ настройка
+
+sudo apt-get update - обновит список пакетов с репозитари€
+sudo apt-get upgrade - обновит установленные пакеты
+
+sudo shutdown Цh now
+
+cat /proc/cpuinfo - инфо
+cat /proc/partitions
+cat /proc/version
+vcgencmd measure_temp - температура
+
+sudo reboot - перезагрузка
+sudo halt - выключение
+Ctrl+C - выход из открытой консольной программы (если не предусмотрено других клавиш)
+Shift+Ins - вставить текст в консоль
+Ctrl+Ins - копировать выделенный текст из консоли
+df - Ёта команда выводит размер, а так же свободное и зан€тое место на всех смонтированных (подключенных) файловых системах
+cd - переход в нужную папку. Ќапример cd /home/pi
+dir - покажет содержимое текущей папки
+pwd - покажет ваше текущее расположении
+date - покажет врем€ и дату
+cal - покажет календарь на текущий мес€ц
+cal -y - покажет календарь на текущий год
+wget - скачать файл в текущую директорию. Ќапример wget http://mysite.com/myfile.deb
+
+ifconfig -a - посмотреть сетевые настройки
+
+
+sudo apt-get install [им€ пакета] - установит нужный пакет
+
+htop Ц диспетчер задач ”становка: sudo apt-get install htop
+Mc Ц файловый менеджер ”становка: sudo apt-get install mc
+
+sudo apt-get install swig компил€тор
+
+устанавливаем gphoto2 дл€ питона
+sudo apt-get install python3-pip
+sudo apt-get install swig		
+sudo pip-3.2 install gphoto2
+
+gphoto2 --capture-image-and-download --filename "TL//Day_%m%d//TL_%H%M_%S.cr2"
+gphoto2 --set-config iso=100
+gphoto2 --set-config imageformat=32 RAW
+gphoto2 --set-config imageformat=0 L/JPG
+gphoto2 --set-config aeb=0
+gphoto2 --set-config aperture=9
+gphoto2 --set-config picturestyle=2
+gphoto2 --set-config drivemode=0
+gphoto2 --set-config focusmode=0
+gphoto2 --set-config whitebalance=8
+gphoto2 --set-config colortemperature=2500
+gphoto2 --set-config reviewtime=0
+
+
+gphoto2 --get-config=/main/settings/datetime
+gphoto2 --get-config=/main/imgsettings/imageformat
+
+sudo date -s "Mon Aug  12 20:14:11 UTC 2014"
+
+NANO
+выделение: Alt-A или Ctrl-^. 
+скопировать в буффер Ctrl-K (или F9). 
+в буффер обмена Ч комбинаци€ Alt-6 
+из буффера обмена Ч Ctrl-U или F10
+Ctrl-K при отсутствии выделени€ удал€ет строку. 
+вставить с помощью Ctrl-U.
+Alt-T, стирающа€ всЄ от курсора и до конца файла 
+
+=============================================================точка доступа
+sudo apt-get install dnsmasq
+sudo apt-get install hostapd
+nano /etc/dhcpcd.conf
+	denyinterfaces wlan0
+				добовл€ть выше interface lines 
+sudo nano /etc/network/interfaces
+allow-hotplug wlan0  
+iface wlan0 inet static  
+    address 172.24.1.1
+    netmask 255.255.255.0
+    network 172.24.1.0
+    broadcast 172.24.1.255
+#    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf
+
+sudo service dhcpcd restart
+sudo ifdown wlan0; sudo ifup wlan0
+
+nano /etc/hostapd/hostapd.conf
+	# This is the name of the WiFi interface we configured above
+	interface=wlan0
+	# Use the nl80211 driver with the brcmfmac driver
+	driver=nl80211
+	# This is the name of the network
+	ssid=Pi3-AP
+	# Use the 2.4GHz band
+	hw_mode=g
+	# Use channel 6
+	channel=6
+	# Enable 802.11n
+	ieee80211n=1
+	# Enable WMM
+	wmm_enabled=1
+	# Enable 40MHz channels with 20ns guard interval
+	ht_capab=[HT40][SHORT-GI-20][DSSS_CCK-40]
+	# Accept all MAC addresses
+	macaddr_acl=0
+	# Use WPA authentication
+	auth_algs=1
+	# Require clients to know the network name
+	ignore_broadcast_ssid=0
+	# Use WPA2
+	wpa=2
+	# Use a pre-shared key
+	wpa_key_mgmt=WPA-PSK
+	# The network passphrase
+	wpa_passphrase=raspberry
+	# Use AES, instead of TKIP
+	rsn_pairwise=CCMP
+
+sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf
+Ctrl+C to stop it.
+sudo nano /etc/default/hostapd
+	DAEMON_CONF="/etc/hostapd/hostapd.conf"
+
+sudo mv /etc/dnsmasq.conf /etc/dnsmasq.conf.orig  
+sudo nano /etc/dnsmasq.conf
+	interface=wlan0      # Use interface wlan0  
+	listen-address=172.24.1.1 # Explicitly specify the address to listen on  
+	bind-interfaces      # Bind to the interface to make sure we aren't sending things elsewhere  
+	server=8.8.8.8       # Forward DNS requests to Google DNS  
+	domain-needed        # Don't forward short names  
+	bogus-priv           # Never forward addresses in the non-routed address spaces.  
+	dhcp-range=172.24.1.50,172.24.1.150,12h # Assign IP addresses between 172.24.1.50 and 172.24.1.150 with a 12 hour lease time  
+
+sudo nano /etc/sysctl.conf
+	net.ipv4.ip_forward=1   разкоментировать
+
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
+sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
+sudo iptables -A FORWARD -i wlan0 -o eth0 -j ACCEPT
+
+sudo reboot
+sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
+sudo nano /etc/rc.local
+	iptables-restore < /etc/iptables.ipv4.nat
+
+sudo service hostapd start
+sudo service dnsmasq start
+
+sudo reboot
+
+
+==================================================
+
+
+USB FLASH
+sudo apt-get install usbmount
+sudo nano /etc/ustmount/usbmount.conf
+
+дл€ датчика температуры∆
+sudo apt-get install python-smbus
+sudo apt-get install i2c-tools
+sudo nano /etc/modules
+	i2c-bcm2708
+	i2c-dev
+
+sudo nano /boot/config.txt
+	dtparam=i2c1=on
+	dtparam=i2c_arm=on
+
+sudo reboot
+тест:
+sudo i2cdetect -y 1
+
+==========================================================================================================
+#!/usr/bin/python
+import smbus
+import time
+from ctypes import c_short
+  
+DEVICE = 0x77 # Default device I2C address
+  
+#bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
+bus = smbus.SMBus(1) # Rev 2 Pi uses 1 
+  
+def convertToString(data):
+  # Simple function to convert binary data into
+  # a string
+  return str((data[1] + (256 * data[0])) / 1.2)
+ 
+def getShort(data, index):
+  # return two bytes from data as a signed 16-bit value
+  return c_short((data[index]<< 8) + data[index + 1]).value
+ 
+def getUshort(data, index):
+  # return two bytes from data as an unsigned 16-bit value
+  return (data[index]<< 8) + data[index+1] 
+ 
+def readBmp180Id(addr=DEVICE):
+  # Register Address
+  REG_ID     = 0xD0
+ 
+  (chip_id, chip_version) = bus.read_i2c_block_data(addr, REG_ID, 2)
+  return (chip_id, chip_version)
+   
+def readBmp180(addr=DEVICE):
+  # Register Addresses
+  REG_CALIB  = 0xAA
+  REG_MEAS   = 0xF4
+  REG_MSB    = 0xF6
+  REG_LSB    = 0xF7
+  # Control Register Address
+  CRV_TEMP   = 0x2E
+  CRV_PRES   = 0x34
+  # Oversample setting
+  OVERSAMPLE = 3    # 0 - 3
+   
+  # Read calibration data
+  # Read calibration data from EEPROM
+  cal = bus.read_i2c_block_data(addr, REG_CALIB, 22)
+ 
+  # Convert byte data to word values
+  AC1 = getShort(cal, 0)
+  AC2 = getShort(cal, 2)
+  AC3 = getShort(cal, 4)
+  AC4 = getUshort(cal, 6)
+  AC5 = getUshort(cal, 8)
+  AC6 = getUshort(cal, 10)
+  B1  = getShort(cal, 12)
+  B2  = getShort(cal, 14)
+  MB  = getShort(cal, 16)
+  MC  = getShort(cal, 18)
+  MD  = getShort(cal, 20)
+ 
+  # Read temperature
+  bus.write_byte_data(addr, REG_MEAS, CRV_TEMP)
+  time.sleep(0.005)
+  (msb, lsb) = bus.read_i2c_block_data(addr, REG_MSB, 2)
+  UT = (msb << 8) + lsb
+ 
+  # Read pressure
+  bus.write_byte_data(addr, REG_MEAS, CRV_PRES + (OVERSAMPLE << 6))
+  time.sleep(0.04)
+  (msb, lsb, xsb) = bus.read_i2c_block_data(addr, REG_MSB, 3)
+  UP = ((msb << 16) + (lsb << 8) + xsb) >> (8 - OVERSAMPLE)
+ 
+  # Refine temperature
+  X1 = ((UT - AC6) * AC5) >> 15
+  X2 = (MC << 11) / (X1 + MD)
+  B5 = X1 + X2 temperature = (B5 + 8) >> 4
+ 
+  # Refine pressure
+  B6  = B5 - 4000
+  B62 = B6 * B6 >> 12
+  X1  = (B2 * B62) >> 11
+  X2  = AC2 * B6 >> 11
+  X3  = X1 + X2
+  B3  = (((AC1 * 4 + X3) << OVERSAMPLE) + 2) >> 2
+ 
+  X1 = AC3 * B6 >> 13
+  X2 = (B1 * B62) >> 16
+  X3 = ((X1 + X2) + 2) >> 2
+  B4 = (AC4 * (X3 + 32768)) >> 15
+  B7 = (UP - B3) * (50000 >> OVERSAMPLE)
+ 
+  P = (B7 * 2) / B4
+ 
+  X1 = (P >> 8) * (P >> 8)
+  X1 = (X1 * 3038) >> 16
+  X2 = (-7357 * P) >> 16
+  pressure = P + ((X1 + X2 + 3791) >> 4)
+ 
+  return (temperature/10.0,pressure/ 100.0)
+ 
+def main():
+     
+  (chip_id, chip_version) = readBmp180Id()
+  print "Chip ID     :", chip_id
+  print "Version     :", chip_version
+ 
+  print
+   
+  (temperature,pressure)=readBmp180()
+  print "Temperature : ", temperature, "C"
+  print "Pressure    : ", pressure, "mbar"
+   
+if __name__=="__main__":
+   main()
+==================================================================================================
+
+
+
+
+GIT
+https://github.com/6564200/TL.git
+git@github.com:6564200/TL.git
+
+Еor create a new repository on the command line
+
+echo "# TL" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin git@github.com:6564200/TL.git
+git push -u origin master
+
+
+Еor push an existing repository from the command line
+
+git remote add origin git@github.com:6564200/TL.git
+git push -u origin master
+
+
+
+
