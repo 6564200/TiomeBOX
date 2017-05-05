@@ -1,10 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
-
 from urllib import urlopen
 from datetime import datetime
 import os
+import mmap
 import sys
 import socket
 
@@ -27,7 +27,7 @@ def internet_connection():
 
 def send_to_WEB(s={}):
     global urlopen
-    #print s
+    
     url_api = "https://kazmaz.pythonanywhere.com/max/default/reglog.html?cam=%s&t=%s&w=%s&p=%s&r=%s&c=%s&er=%s&sp=%s&seting=%s&mv=%s&ch=%s" % (s['cam'], s['temp'], s['water'], s['reg_on'], s['reg_on'], s['capture'], s['errorcapture'], s['stopcapture'], s['setcapture'], s['cfile'], s['chec'])
     #print url_api
     while 1:
@@ -44,10 +44,16 @@ def send_to_WEB(s={}):
 
 def main():
   #printlog(sys.avg) 
+
+  filename = "/home/pi/TL/weather.txt"
+  File = open(filename, "r+b")
+  size = os.path.getsize(filename)
+  data = mmap.mmap(File.fileno(), size)
+
   struct = {
   'cam':sys.argv[1],
-  'temp':sys.argv[2],
-  'water':sys.argv[3],
+  'temp': data[0:7],
+  'water': data[20:27],
   'reg_on': datetime.now().strftime("%Y.%m.%d%H:%M:%S"),
   'capture':sys.argv[4],
   'errorcapture':sys.argv[5],
@@ -58,6 +64,9 @@ def main():
 
   }
 
+  data.close()
+  File.close()
+
   if internet_connection():
 	if send_to_WEB(struct):
 		printlog('Send OK')
@@ -65,6 +74,7 @@ def main():
 		printlog('Send ERROR')
   else:
         printlog( "internet connection error" )
+	printlog( struct ['temp'])
 
      
 

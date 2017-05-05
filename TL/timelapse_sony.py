@@ -1,10 +1,6 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-
-##----------------------------------
-##--- FOR RAW IMAGES
-##--- test send to WEB
-##----------------------------------
 
 import subprocess
 from datetime import datetime, timedelta, time, date
@@ -17,8 +13,8 @@ import sys
 START_TIME = time(2,30,00)
 STOP_TIME = time(23,55,00)
 ISO = 100
-CAM_ID = 3
-INTERVAL = 300
+CAM_ID = 4
+INTERVAL = 30
 
 
 
@@ -63,9 +59,6 @@ def init_time():
 	return TIMES
 
 def cam_config():
-	#gphoto_config = {'imagequality': 1, 'iso': 100, 'whitebalance': 10, 'colortemperature': 6500, 'aperture': 2, 'focusmode': 0, 'capturemode': 0, 'aspectratio': 0 }
-	#cfg = ['--set-config=%s=%s' % (k, v) for k, v in gphoto_config.items()]
-	#proc = subprocess.Popen('gphoto2 ' + ' '.join(cfg), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	proc = subprocess.Popen('gphoto2 --set-config=iso='+str(ISO), shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	proc.wait()
 	res = proc.communicate()
@@ -103,9 +96,8 @@ def printlog(text = "text"):  ##---------------------------------
 
 def send_to_WEB(captureinfo = "0 0 0", COUNT=0, chec=99):
 	mess = str(CAM_ID) + ' 0 0 ' + captureinfo + ' ISO' + str(ISO) + ' ' + str(COUNT) + ' ' + str(chec)
-	print mess
+	printlog( mess )
 	proc = subprocess.Popen('/home/pi/TL/send_to_WEB.py '+ mess, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
 	return True
 
 def chek_time_work():
@@ -119,12 +111,35 @@ def chek_time_work():
 	num_week = now_date.isoweekday() 
 	return True
 	
+def SetUp():
+	global START_TIME, STOP_TIME, ISO ,CAM_ID, INTERVAL
+
+	file_set = open('/home/pi/TL/settings.txt', 'r')
+	settings = file_set.read()
+	file_set.close()
+	dct = eval(settings)
+
+	timeeee = ()
+	for sta in dct['START_TIME'].split(','):
+		timeeee.append(sta )
+
+	print timeeee
+	#START_TIME = time(timeeee )
+	print START_TIME
+	#STOP_TIME = time(dct['STOP_TIME'].split(','))
+	ISO = dct['ISO']
+	CAM_ID = dct['ID']
+	INTERVAL = dct['INTERVAL']
+
+	return True
+
 ##-----------------------------------------------------------------------------------------------------
 def main():
 
 	printlog("Start program")
+	SetUp()
 	TIMES = init_time()
-	send_to_WEB('')
+	send_to_WEB()
 	printlog(TIMES.strftime("%A, %d. %B %Y %I:%M%p"))
 
 	DELTA = timedelta(seconds=INTERVAL)
