@@ -1,14 +1,44 @@
+clear cache sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
+
+sudo systemctl stop ntp
+sudo systemctl disable ntp
+
+match = re.search('^Hardware\s+:\s+(\w+)$', cpuinfo, flags=re.MULTILINE | re.IGNORECASE)
+
 sudo raspi-config - первоначальна€ настройка
 
 sudo apt-get update - обновит список пакетов с репозитари€
 sudo apt-get upgrade - обновит установленные пакеты
 
-sudo shutdown Цh now
+sudo apt-get install exfat-fuse
+sudo mkdir /mnt/SD
+sudo mount /dev/sdb1 /mnt/SD
+blkid  ---> "043B-7C40" TYPE="exfat" PARTUUID="c951cc7b-01"
+sudo nano /etc/fstab   
 
+>>>> UUID=4281-7FD7  /mnt/SD         exfat   defaults,auto,umask=000,rw 0 0
+>>>> 
+
+sudo apt-get install build-essential python-dev
+sudo pip install Adafruit_Python_DHT
+python >>> 	import Adafruit_DHT
+		Adafruit_DHT.read_retry(22, 27) # (sensor, GPIO)
+
+sudo shutdown -h now
+
+REBOOT:
+sudo crontab -e
+>>> 50 3 * * * reboot &>/var/log/reboot.log
+>>> 15 0 * * * sudo mv -f /home/pi/TL/DATA/* /mnt/SD/
+
+
+wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh && chmod +x gphoto2-updater.sh && sudo ./gphoto2-updater.sh
 cat /proc/cpuinfo - инфо
 cat /proc/partitions
 cat /proc/version
 vcgencmd measure_temp - температура
+
+sudo apt-get exiftool
 
 sudo reboot - перезагрузка
 sudo halt - выключение
@@ -85,7 +115,7 @@ iface wlan0 inet static
 sudo service dhcpcd restart
 sudo ifdown wlan0; sudo ifup wlan0
 
-nano /etc/hostapd/hostapd.conf
+sudo nano /etc/hostapd/hostapd.conf
 	# This is the name of the WiFi interface we configured above
 	interface=wlan0
 	# Use the nl80211 driver with the brcmfmac driver
@@ -148,16 +178,12 @@ sudo service hostapd start
 sudo service dnsmasq start
 
 sudo reboot
-
-
 ==================================================
-
-
 USB FLASH
 sudo apt-get install usbmount
 sudo nano /etc/ustmount/usbmount.conf
 
-дл€ датчика температуры∆
+=============================================
 sudo apt-get install python-smbus
 sudo apt-get install i2c-tools
 sudo nano /etc/modules
@@ -172,143 +198,63 @@ sudo reboot
 тест:
 sudo i2cdetect -y 1
 
-==========================================================================================================
-#!/usr/bin/python
-import smbus
-import time
-from ctypes import c_short
-  
-DEVICE = 0x77 # Default device I2C address
-  
-#bus = smbus.SMBus(0)  # Rev 1 Pi uses 0
-bus = smbus.SMBus(1) # Rev 2 Pi uses 1 
-  
-def convertToString(data):
-  # Simple function to convert binary data into
-  # a string
-  return str((data[1] + (256 * data[0])) / 1.2)
- 
-def getShort(data, index):
-  # return two bytes from data as a signed 16-bit value
-  return c_short((data[index]<< 8) + data[index + 1]).value
- 
-def getUshort(data, index):
-  # return two bytes from data as an unsigned 16-bit value
-  return (data[index]<< 8) + data[index+1] 
- 
-def readBmp180Id(addr=DEVICE):
-  # Register Address
-  REG_ID     = 0xD0
- 
-  (chip_id, chip_version) = bus.read_i2c_block_data(addr, REG_ID, 2)
-  return (chip_id, chip_version)
-   
-def readBmp180(addr=DEVICE):
-  # Register Addresses
-  REG_CALIB  = 0xAA
-  REG_MEAS   = 0xF4
-  REG_MSB    = 0xF6
-  REG_LSB    = 0xF7
-  # Control Register Address
-  CRV_TEMP   = 0x2E
-  CRV_PRES   = 0x34
-  # Oversample setting
-  OVERSAMPLE = 3    # 0 - 3
-   
-  # Read calibration data
-  # Read calibration data from EEPROM
-  cal = bus.read_i2c_block_data(addr, REG_CALIB, 22)
- 
-  # Convert byte data to word values
-  AC1 = getShort(cal, 0)
-  AC2 = getShort(cal, 2)
-  AC3 = getShort(cal, 4)
-  AC4 = getUshort(cal, 6)
-  AC5 = getUshort(cal, 8)
-  AC6 = getUshort(cal, 10)
-  B1  = getShort(cal, 12)
-  B2  = getShort(cal, 14)
-  MB  = getShort(cal, 16)
-  MC  = getShort(cal, 18)
-  MD  = getShort(cal, 20)
- 
-  # Read temperature
-  bus.write_byte_data(addr, REG_MEAS, CRV_TEMP)
-  time.sleep(0.005)
-  (msb, lsb) = bus.read_i2c_block_data(addr, REG_MSB, 2)
-  UT = (msb << 8) + lsb
- 
-  # Read pressure
-  bus.write_byte_data(addr, REG_MEAS, CRV_PRES + (OVERSAMPLE << 6))
-  time.sleep(0.04)
-  (msb, lsb, xsb) = bus.read_i2c_block_data(addr, REG_MSB, 3)
-  UP = ((msb << 16) + (lsb << 8) + xsb) >> (8 - OVERSAMPLE)
- 
-  # Refine temperature
-  X1 = ((UT - AC6) * AC5) >> 15
-  X2 = (MC << 11) / (X1 + MD)
-  B5 = X1 + X2 temperature = (B5 + 8) >> 4
- 
-  # Refine pressure
-  B6  = B5 - 4000
-  B62 = B6 * B6 >> 12
-  X1  = (B2 * B62) >> 11
-  X2  = AC2 * B6 >> 11
-  X3  = X1 + X2
-  B3  = (((AC1 * 4 + X3) << OVERSAMPLE) + 2) >> 2
- 
-  X1 = AC3 * B6 >> 13
-  X2 = (B1 * B62) >> 16
-  X3 = ((X1 + X2) + 2) >> 2
-  B4 = (AC4 * (X3 + 32768)) >> 15
-  B7 = (UP - B3) * (50000 >> OVERSAMPLE)
- 
-  P = (B7 * 2) / B4
- 
-  X1 = (P >> 8) * (P >> 8)
-  X1 = (X1 * 3038) >> 16
-  X2 = (-7357 * P) >> 16
-  pressure = P + ((X1 + X2 + 3791) >> 4)
- 
-  return (temperature/10.0,pressure/ 100.0)
- 
-def main():
-     
-  (chip_id, chip_version) = readBmp180Id()
-  print "Chip ID     :", chip_id
-  print "Version     :", chip_version
- 
-  print
-   
-  (temperature,pressure)=readBmp180()
-  print "Temperature : ", temperature, "C"
-  print "Pressure    : ", pressure, "mbar"
-   
-if __name__=="__main__":
-   main()
-==================================================================================================
+=================================================
+install pip for python
+
+
+
+=================================================
+sudo apt-get install python-dev
+sudo apt-get install libjpeg-dev
+sudo apt-get install libjpeg8-dev
+sudo apt-get install libpng3
+sudo apt-get install libfreetype6-dev
+sudo pip install Pillow
+=================================================
+sudo apt-get install lirc
+sudo nano /etc/modules
+	lirc_dev
+	lirc_rpi gpio_out_pin=10
+sudo nano /etc/lirc/hardware.conf
+	LIRCD_ARGS="--uinput"
+	LOAD_MODULES=true
+	DRIVER="default"
+	DEVICE="/dev/lirc0"
+	MODULES="lirc_rpi"
+sudo reboot
+sudo /etc/init.d/lirc restart
+sudo nano /etc/lirc/lircd.conf
+	[see file]
+sudo /etc/init.d/lirc stop
+sudo /etc/init.d/lirc start
+sudo nano /boot/config.txt
+	dtoverlay=lirc-rpi,gpio_out_pin=10
+
+irsend SEND_ONCE Minolta-Sony-RMT-DSLR1 S
+=================================================
+sudo apt-get install libusb-dev
+git clone https://github.com/codazoda/hub-ctrl.c
+cd hub-ctrl.c/
+sudo gcc -o hub-ctrl hub-ctrl.c -lusb
+sudo ./hub-ctrl -h 0 -P 2 -p 1
+sudo ./hub-ctrl -h 0 -P 2 -p 0
+=================================================
+sudo nano /etc/modprobe.d/raspi-blacklist.conf
+#bt
+blacklist btbcm
+blacklist hci_uart
+=================================================
 
 
 
 
-GIT
-https://github.com/6564200/TL.git
-git@github.com:6564200/TL.git
-
-Еor create a new repository on the command line
-
-echo "# TL" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git remote add origin git@github.com:6564200/TL.git
-git push -u origin master
 
 
-Еor push an existing repository from the command line
 
-git remote add origin git@github.com:6564200/TL.git
-git push -u origin master
+
+
+
+
 
 
 
