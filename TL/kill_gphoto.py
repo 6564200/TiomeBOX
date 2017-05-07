@@ -11,11 +11,36 @@ import sys
 
 CAM_ID = 3
 ISO = 0
+START_TIME = 0
+STOP_TIME = 0
+INTERVAL = 30
+
 USED = '0G'
 AVAIL = '0G'
 USE = '0%'
 
 
+def SetUp():
+	global START_TIME, STOP_TIME, ISO ,CAM_ID, INTERVAL
+
+	file_set = open('/home/pi/TL/settings.txt', 'r+b')
+	settings = file_set.read()
+	file_set.close()
+	dct = eval(settings)
+
+	H = []
+	for sta in dct['START'].split(','): H.append(int(sta))
+	START_TIME = time(H[0],H[1],H[2])
+
+	H = []
+	for sta in dct['STOP'].split(','): H.append(int(sta))
+	STOP_TIME = time(H[0],H[1],H[2])
+
+	ISO = dct['ISO']
+	CAM_ID = dct['ID']
+	INTERVAL = dct['INTERVAL']
+
+	return True
 
 def printlog(text = "text"):  ##---------------------------------
 	#print text
@@ -51,7 +76,7 @@ def main():
 	read_use_filesys()
 	KILL_P = 0
 	PID = PID_NEW = 0
-	printlog('Start')
+	printlog('Start '+USED+AVAIL+USE)
 	send_to_WEB("0 0 0", 0, 33)
 	while True:
 		proc = subprocess.Popen('pidof gphoto2', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

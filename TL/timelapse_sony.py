@@ -114,19 +114,19 @@ def chek_time_work():
 def SetUp():
 	global START_TIME, STOP_TIME, ISO ,CAM_ID, INTERVAL
 
-	file_set = open('/home/pi/TL/settings.txt', 'r')
+	file_set = open('/home/pi/TL/settings.txt', 'r+b')
 	settings = file_set.read()
 	file_set.close()
 	dct = eval(settings)
 
-	timeeee = ()
-	for sta in dct['START_TIME'].split(','):
-		timeeee.append(sta )
+	H = []
+	for sta in dct['START'].split(','): H.append(int(sta))
+	START_TIME = time(H[0],H[1],H[2])
 
-	print timeeee
-	#START_TIME = time(timeeee )
-	print START_TIME
-	#STOP_TIME = time(dct['STOP_TIME'].split(','))
+	H = []
+	for sta in dct['STOP'].split(','): H.append(int(sta))
+	STOP_TIME = time(H[0],H[1],H[2])
+
 	ISO = dct['ISO']
 	CAM_ID = dct['ID']
 	INTERVAL = dct['INTERVAL']
