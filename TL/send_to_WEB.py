@@ -2,11 +2,22 @@
 # -*- coding: utf-8 -*- 
 
 from urllib import urlopen
-from datetime import datetime
+from datetime import datetime, timedelta, time, date
 import os
 import mmap
 import sys
 import socket
+
+CAM_ID = 3
+ISO = 0
+START_TIME = 0
+STOP_TIME = 0
+INTERVAL = 30
+
+USED = '0G'
+AVAIL = '0G'
+USE = '0%'
+
 
 def printlog(text = "text"):  ##---------------------------------
   #print text
@@ -28,7 +39,7 @@ def internet_connection():
 def send_to_WEB(s={}):
     global urlopen
     
-    url_api = "https://kazmaz.pythonanywhere.com/max/default/reglog.html?cam=%s&t=%s&w=%s&p=%s&r=%s&c=%s&er=%s&sp=%s&seting=%s&mv=%s&ch=%s" % (s['cam'], s['temp'], s['water'], s['reg_on'], s['reg_on'], s['capture'], s['errorcapture'], s['stopcapture'], s['setcapture'], s['cfile'], s['chec'])
+    url_api = "https://kazmaz.pythonanywhere.com/max/default/reglog.html?cam=%s&t=%s&w=%s&p=%s&r=%s&seting=%s&ch=%s" % (s['cam'], s['temp'], s['water'], s['reg_on'], s['reg_on'], s['setcapture'], s['chec'])
     #print url_api
     while 1:
             try:
@@ -42,26 +53,41 @@ def send_to_WEB(s={}):
 
     return True
 
+def SetUp():
+	global START_TIME, STOP_TIME, ISO ,CAM_ID, INTERVAL
+	file_set = open('/home/pi/TL/settings.txt', 'r+b')
+	settings = file_set.read()
+	file_set.close()
+	dct = eval(settings)
+	H = []
+	for sta in dct['START'].split(','): H.append(int(sta))
+	START_TIME = time(H[0],H[1],H[2])
+	H = []
+	for sta in dct['STOP'].split(','): H.append(int(sta))
+	STOP_TIME = time(H[0],H[1],H[2])
+	ISO = dct['ISO']
+	CAM_ID = dct['ID']
+	INTERVAL = dct['INTERVAL']
+	return True
+
 def main():
   #printlog(sys.avg) 
+
+  SetUp()
 
   filename = "/home/pi/TL/weather.txt"
   File = open(filename, "r+b")
   size = os.path.getsize(filename)
   data = mmap.mmap(File.fileno(), size)
 
+
   struct = {
-  'cam':sys.argv[1],
+  'cam':str(CAM_ID),
   'temp': data[0:7],
   'water': data[20:27],
   'reg_on': datetime.now().strftime("%Y.%m.%d%H:%M:%S"),
-  'capture':sys.argv[4],
-  'errorcapture':sys.argv[5],
-  'stopcapture':sys.argv[6],
-  'setcapture':sys.argv[7],
-  'cfile':sys.argv[8],
-  'chec':sys.argv[9]
-
+  'setcapture': str(ISO)+str(STOP_TIME)+str(START_TIME)+str(INTERVAL),
+  'chec':sys.argv[1]
   }
 
   data.close()
@@ -70,6 +96,7 @@ def main():
   if internet_connection():
 	if send_to_WEB(struct):
 		printlog('Send OK')
+		print struct 
 	else:
 		printlog('Send ERROR')
   else:

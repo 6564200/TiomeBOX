@@ -34,7 +34,7 @@ def init_time():
 		res = proc.communicate()
 		find_Date = res[0].find("Date/Time Original")
 		cam_datetime = res[0][find_Date+34:find_Date+53]
-		print cam_datetime
+		#print cam_datetime
 		f_datatime = datetime.strptime(cam_datetime, '%Y:%m:%d %H:%M:%S')
 		#print f_datatime
 		time_tuple = ( f_datatime.year,	
@@ -65,10 +65,10 @@ def cam_config():
 	list_f = res[0]
 	if list_f.find("debug") == -1:
 		printlog("CAMERA SET OK")
-		send_to_WEB('0 0 0', 0, 90)
+		send_to_WEB(chec=210)
 	else:
 		printlog("CAMERA SET ERROR")
-		send_to_WEB('0 0 0', 0, 105)
+		send_to_WEB(chec=67)
 		return False
 	return True
 
@@ -94,9 +94,9 @@ def printlog(text = "text"):  ##---------------------------------
         f.write(str(datetime.now())[:-7] + '\t' + text + '\n')
 	f.close()
 
-def send_to_WEB(captureinfo = "0 0 0", COUNT=0, chec=99):
-	mess = str(CAM_ID) + ' 0 0 ' + captureinfo + ' ISO' + str(ISO) + ' ' + str(COUNT) + ' ' + str(chec)
-	printlog( mess )
+def send_to_WEB(chec=99):
+	mess = str(chec)
+	
 	proc = subprocess.Popen('/home/pi/TL/send_to_WEB.py '+ mess, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	return True
 
@@ -139,15 +139,13 @@ def main():
 	printlog("Start program")
 	SetUp()
 	TIMES = init_time()
-	send_to_WEB()
 	printlog(TIMES.strftime("%A, %d. %B %Y %I:%M%p"))
-
 	DELTA = timedelta(seconds=INTERVAL)
 	printlog("SET INTERVAL: " + str(DELTA)) 
 	printlog("START-STOP TIME: " + str(START_TIME) + ' - ' + str(STOP_TIME)) 
 	
 	cam_config()
-
+	send_to_WEB(chec=210)
 	COUNT_SHOT = 0
 	while True:
 		TIME_C = datetime.now()
@@ -155,8 +153,8 @@ def main():
 					COUNT_SHOT += 1
                                         ret = capture(COUNT_SHOT)
                                         TIME_I = datetime.now() - TIME_C
-					if ret: send_to_WEB('1 0 0', COUNT_SHOT, 99)
-					else: send_to_WEB('0 1 0', COUNT_SHOT, 66)
+					if ret: send_to_WEB(chec=99)
+					else: send_to_WEB(chec=66)
                                         printlog("SHOT: " + str(COUNT_SHOT) + " ; TIME SHoT: " + str(TIME_C))
                                         
                                         while TIME_I < DELTA:
@@ -167,7 +165,7 @@ def main():
                                                         sleep(DELTA.seconds - (datetime.now() - TIME_C).seconds - 1)
 
                 else:
-				send_to_WEB('0 0 1', COUNT_SHOT, 100)
+				send_to_WEB(chec=200)
 				printlog(str(INTERVAL))
                                 sleep(INTERVAL)
 

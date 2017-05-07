@@ -49,8 +49,8 @@ def printlog(text = "text"):  ##---------------------------------
 	f.close()
 
 
-def send_to_WEB(captureinfo = "0 0 0",  COUNT=0, chec=104):
-        mess = str(CAM_ID) + ' 0 0 ' + captureinfo + ' '+ USED + AVAIL + USE + ' ' + str(ISO) + ' ' + str(COUNT) + ' ' + str(chec)
+def send_to_WEB(chec=60):
+        mess = str(chec)
         ##print mess
         proc = subprocess.Popen('/home/pi/TL/send_to_WEB.py '+ mess, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -77,7 +77,7 @@ def main():
 	KILL_P = 0
 	PID = PID_NEW = 0
 	printlog('Start '+USED+AVAIL+USE)
-	send_to_WEB("0 0 0", 0, 33)
+	send_to_WEB(80)
 	while True:
 		proc = subprocess.Popen('pidof gphoto2', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		proc.wait()
@@ -97,6 +97,7 @@ def main():
 				send_to_WEB()
 				KILL_P += 1
 				if KILL_P > 8:
+					send_to_WEB(chec=100)
 					subprocess.call('sudo reboot now', shell=True)
 				timeout = 0
 
