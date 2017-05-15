@@ -97,7 +97,7 @@ def printlog(text = "text"):  ##---------------------------------
 def send_to_WEB(chec=99):
 	mess = str(chec)
 	
-	proc = subprocess.Popen('/home/pi/TL/send_to_WEB.py '+ mess, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc = subprocess.Popen('sudo python /home/pi/TL/send_to_WEB.py '+ mess, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	return True
 
 def chek_time_work():
