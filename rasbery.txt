@@ -1,3 +1,5 @@
+git clone git@github.com:6564200/TiomeBOX.git
+
 clear cache sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
 
 sudo systemctl stop ntp
@@ -5,10 +7,10 @@ sudo systemctl disable ntp
 
 match = re.search('^Hardware\s+:\s+(\w+)$', cpuinfo, flags=re.MULTILINE | re.IGNORECASE)
 
-sudo raspi-config - первоначальная настройка
+sudo raspi-config - ГЇГҐГ°ГўГ®Г­Г Г·Г Г«ГјГ­Г Гї Г­Г Г±ГІГ°Г®Г©ГЄГ 
 
-sudo apt-get update - обновит список пакетов с репозитария
-sudo apt-get upgrade - обновит установленные пакеты
+sudo apt-get update - Г®ГЎГ­Г®ГўГЁГІ Г±ГЇГЁГ±Г®ГЄ ГЇГ ГЄГҐГІГ®Гў Г± Г°ГҐГЇГ®Г§ГЁГІГ Г°ГЁГї
+sudo apt-get upgrade - Г®ГЎГ­Г®ГўГЁГІ ГіГ±ГІГ Г­Г®ГўГ«ГҐГ­Г­Г»ГҐ ГЇГ ГЄГҐГІГ»
 
 sudo apt-get install exfat-fuse
 sudo mkdir /mnt/SD
@@ -33,38 +35,38 @@ sudo crontab -e
 
 
 wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh && chmod +x gphoto2-updater.sh && sudo ./gphoto2-updater.sh
-cat /proc/cpuinfo - инфо
+cat /proc/cpuinfo - ГЁГ­ГґГ®
 cat /proc/partitions
 cat /proc/version
-vcgencmd measure_temp - температура
+vcgencmd measure_temp - ГІГҐГ¬ГЇГҐГ°Г ГІГіГ°Г 
 
 sudo apt-get exiftool
 
-sudo reboot - перезагрузка
-sudo halt - выключение
-Ctrl+C - выход из открытой консольной программы (если не предусмотрено других клавиш)
-Shift+Ins - вставить текст в консоль
-Ctrl+Ins - копировать выделенный текст из консоли
-df - Эта команда выводит размер, а так же свободное и занятое место на всех смонтированных (подключенных) файловых системах
-cd - переход в нужную папку. Например cd /home/pi
-dir - покажет содержимое текущей папки
-pwd - покажет ваше текущее расположении
-date - покажет время и дату
-cal - покажет календарь на текущий месяц
-cal -y - покажет календарь на текущий год
-wget - скачать файл в текущую директорию. Например wget http://mysite.com/myfile.deb
+sudo reboot - ГЇГҐГ°ГҐГ§Г ГЈГ°ГіГ§ГЄГ 
+sudo halt - ГўГ»ГЄГ«ГѕГ·ГҐГ­ГЁГҐ
+Ctrl+C - ГўГ»ГµГ®Г¤ ГЁГ§ Г®ГІГЄГ°Г»ГІГ®Г© ГЄГ®Г­Г±Г®Г«ГјГ­Г®Г© ГЇГ°Г®ГЈГ°Г Г¬Г¬Г» (ГҐГ±Г«ГЁ Г­ГҐ ГЇГ°ГҐГ¤ГіГ±Г¬Г®ГІГ°ГҐГ­Г® Г¤Г°ГіГЈГЁГµ ГЄГ«Г ГўГЁГё)
+Shift+Ins - ГўГ±ГІГ ГўГЁГІГј ГІГҐГЄГ±ГІ Гў ГЄГ®Г­Г±Г®Г«Гј
+Ctrl+Ins - ГЄГ®ГЇГЁГ°Г®ГўГ ГІГј ГўГ»Г¤ГҐГ«ГҐГ­Г­Г»Г© ГІГҐГЄГ±ГІ ГЁГ§ ГЄГ®Г­Г±Г®Г«ГЁ
+df - ГќГІГ  ГЄГ®Г¬Г Г­Г¤Г  ГўГ»ГўГ®Г¤ГЁГІ Г°Г Г§Г¬ГҐГ°, Г  ГІГ ГЄ Г¦ГҐ Г±ГўГ®ГЎГ®Г¤Г­Г®ГҐ ГЁ Г§Г Г­ГїГІГ®ГҐ Г¬ГҐГ±ГІГ® Г­Г  ГўГ±ГҐГµ Г±Г¬Г®Г­ГІГЁГ°Г®ГўГ Г­Г­Г»Гµ (ГЇГ®Г¤ГЄГ«ГѕГ·ГҐГ­Г­Г»Гµ) ГґГ Г©Г«Г®ГўГ»Гµ Г±ГЁГ±ГІГҐГ¬Г Гµ
+cd - ГЇГҐГ°ГҐГµГ®Г¤ Гў Г­ГіГ¦Г­ГіГѕ ГЇГ ГЇГЄГі. ГЌГ ГЇГ°ГЁГ¬ГҐГ° cd /home/pi
+dir - ГЇГ®ГЄГ Г¦ГҐГІ Г±Г®Г¤ГҐГ°Г¦ГЁГ¬Г®ГҐ ГІГҐГЄГіГ№ГҐГ© ГЇГ ГЇГЄГЁ
+pwd - ГЇГ®ГЄГ Г¦ГҐГІ ГўГ ГёГҐ ГІГҐГЄГіГ№ГҐГҐ Г°Г Г±ГЇГ®Г«Г®Г¦ГҐГ­ГЁГЁ
+date - ГЇГ®ГЄГ Г¦ГҐГІ ГўГ°ГҐГ¬Гї ГЁ Г¤Г ГІГі
+cal - ГЇГ®ГЄГ Г¦ГҐГІ ГЄГ Г«ГҐГ­Г¤Г Г°Гј Г­Г  ГІГҐГЄГіГ№ГЁГ© Г¬ГҐГ±ГїГ¶
+cal -y - ГЇГ®ГЄГ Г¦ГҐГІ ГЄГ Г«ГҐГ­Г¤Г Г°Гј Г­Г  ГІГҐГЄГіГ№ГЁГ© ГЈГ®Г¤
+wget - Г±ГЄГ Г·Г ГІГј ГґГ Г©Г« Гў ГІГҐГЄГіГ№ГіГѕ Г¤ГЁГ°ГҐГЄГІГ®Г°ГЁГѕ. ГЌГ ГЇГ°ГЁГ¬ГҐГ° wget http://mysite.com/myfile.deb
 
-ifconfig -a - посмотреть сетевые настройки
+ifconfig -a - ГЇГ®Г±Г¬Г®ГІГ°ГҐГІГј Г±ГҐГІГҐГўГ»ГҐ Г­Г Г±ГІГ°Г®Г©ГЄГЁ
 
 
-sudo apt-get install [имя пакета] - установит нужный пакет
+sudo apt-get install [ГЁГ¬Гї ГЇГ ГЄГҐГІГ ] - ГіГ±ГІГ Г­Г®ГўГЁГІ Г­ГіГ¦Г­Г»Г© ГЇГ ГЄГҐГІ
 
-htop – диспетчер задач Установка: sudo apt-get install htop
-Mc – файловый менеджер Установка: sudo apt-get install mc
+htop вЂ“ Г¤ГЁГ±ГЇГҐГІГ·ГҐГ° Г§Г Г¤Г Г· Г“Г±ГІГ Г­Г®ГўГЄГ : sudo apt-get install htop
+Mc вЂ“ ГґГ Г©Г«Г®ГўГ»Г© Г¬ГҐГ­ГҐГ¤Г¦ГҐГ° Г“Г±ГІГ Г­Г®ГўГЄГ : sudo apt-get install mc
 
-sudo apt-get install swig компилятор
+sudo apt-get install swig ГЄГ®Г¬ГЇГЁГ«ГїГІГ®Г°
 
-устанавливаем gphoto2 для питона
+ГіГ±ГІГ Г­Г ГўГ«ГЁГўГ ГҐГ¬ gphoto2 Г¤Г«Гї ГЇГЁГІГ®Г­Г 
 sudo apt-get install python3-pip
 sudo apt-get install swig		
 sudo pip-3.2 install gphoto2
@@ -89,20 +91,20 @@ gphoto2 --get-config=/main/imgsettings/imageformat
 sudo date -s "Mon Aug  12 20:14:11 UTC 2014"
 
 NANO
-выделение: Alt-A или Ctrl-^. 
-скопировать в буффер Ctrl-K (или F9). 
-в буффер обмена — комбинация Alt-6 
-из буффера обмена — Ctrl-U или F10
-Ctrl-K при отсутствии выделения удаляет строку. 
-вставить с помощью Ctrl-U.
-Alt-T, стирающая всё от курсора и до конца файла 
+ГўГ»Г¤ГҐГ«ГҐГ­ГЁГҐ: Alt-A ГЁГ«ГЁ Ctrl-^. 
+Г±ГЄГ®ГЇГЁГ°Г®ГўГ ГІГј Гў ГЎГіГґГґГҐГ° Ctrl-K (ГЁГ«ГЁ F9). 
+Гў ГЎГіГґГґГҐГ° Г®ГЎГ¬ГҐГ­Г  вЂ” ГЄГ®Г¬ГЎГЁГ­Г Г¶ГЁГї Alt-6 
+ГЁГ§ ГЎГіГґГґГҐГ°Г  Г®ГЎГ¬ГҐГ­Г  вЂ” Ctrl-U ГЁГ«ГЁ F10
+Ctrl-K ГЇГ°ГЁ Г®ГІГ±ГіГІГ±ГІГўГЁГЁ ГўГ»Г¤ГҐГ«ГҐГ­ГЁГї ГіГ¤Г Г«ГїГҐГІ Г±ГІГ°Г®ГЄГі. 
+ГўГ±ГІГ ГўГЁГІГј Г± ГЇГ®Г¬Г®Г№ГјГѕ Ctrl-U.
+Alt-T, Г±ГІГЁГ°Г ГѕГ№Г Гї ГўГ±Вё Г®ГІ ГЄГіГ°Г±Г®Г°Г  ГЁ Г¤Г® ГЄГ®Г­Г¶Г  ГґГ Г©Г«Г  
 
-=============================================================точка доступа
+=============================================================ГІГ®Г·ГЄГ  Г¤Г®Г±ГІГіГЇГ 
 sudo apt-get install dnsmasq
 sudo apt-get install hostapd
 nano /etc/dhcpcd.conf
 	denyinterfaces wlan0
-				добовлять выше interface lines 
+				Г¤Г®ГЎГ®ГўГ«ГїГІГј ГўГ»ГёГҐ interface lines 
 sudo nano /etc/network/interfaces
 allow-hotplug wlan0  
 iface wlan0 inet static  
@@ -163,7 +165,7 @@ sudo nano /etc/dnsmasq.conf
 	dhcp-range=172.24.1.50,172.24.1.150,12h # Assign IP addresses between 172.24.1.50 and 172.24.1.150 with a 12 hour lease time  
 
 sudo nano /etc/sysctl.conf
-	net.ipv4.ip_forward=1   разкоментировать
+	net.ipv4.ip_forward=1   Г°Г Г§ГЄГ®Г¬ГҐГ­ГІГЁГ°Г®ГўГ ГІГј
 
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE  
 sudo iptables -A FORWARD -i eth0 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT  
@@ -195,7 +197,7 @@ sudo nano /boot/config.txt
 	dtparam=i2c_arm=on
 
 sudo reboot
-тест:
+ГІГҐГ±ГІ:
 sudo i2cdetect -y 1
 
 =================================================
