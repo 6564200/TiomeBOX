@@ -1,4 +1,4 @@
-git clone git@github.com:6564200/TiomeBOX.git
+git clone https://github.com/6564200/TiomeBOX.git
 
 clear cache sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
 
