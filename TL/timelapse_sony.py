@@ -153,7 +153,7 @@ def main():
 					COUNT_SHOT += 1
                                         ret = capture(COUNT_SHOT)
                                         TIME_I = datetime.now() - TIME_C
-					if ret: send_to_WEB(chec=99)
+					if ret: send_to_WEB()
 					else: send_to_WEB(chec=66)
                                         printlog("SHOT: " + str(COUNT_SHOT) + " ; TIME SHoT: " + str(TIME_C))
                                         
