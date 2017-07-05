@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*- 
 
+import subprocess
 from urllib import urlopen
 from datetime import datetime, timedelta, time, date
 import os
@@ -18,6 +19,19 @@ USED = '0G'
 AVAIL = '0G'
 USE = '0%'
 
+def read_use_filesys():
+	global USED, AVAIL, USE
+	proc3 = subprocess.Popen('df -h -T', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc3.wait()
+	res = proc3.communicate()[0]
+        ft = res.find('fuse')
+	if ft > 0:
+		resf = res[ft:].split()
+		USED = resf[2]
+	        AVAIL = resf[3]
+        	USE = resf[4]
+
+	return True
 
 def printlog(text = "text"):  ##---------------------------------
   #print text
@@ -71,7 +85,6 @@ def SetUp():
 	return True
 
 def main():
-  #printlog(sys.avg) 
 
   SetUp()
 
@@ -80,13 +93,18 @@ def main():
   size = os.path.getsize(filename)
   data = mmap.mmap(File.fileno(), size)
 
+  if (int(sys.argv[1]) < 210):
+    setcap = str(ISO)+str(STOP_TIME)+str(START_TIME)+str(INTERVAL)
+  else:
+    read_use_filesys()
+    setcap = USED + AVAIL + USE
 
   struct = {
   'cam':str(CAM_ID),
   'temp': data[0:7],
   'water': data[20:27],
   'reg_on': datetime.now().strftime("%Y.%m.%d%H:%M:%S"),
-  'setcapture': str(ISO)+str(STOP_TIME)+str(START_TIME)+str(INTERVAL),
+  'setcapture': setcap,
   'chec':sys.argv[1]
   }
 

@@ -145,7 +145,7 @@ def main():
 	printlog("START-STOP TIME: " + str(START_TIME) + ' - ' + str(STOP_TIME)) 
 	
 	cam_config()
-	send_to_WEB(chec=210)
+	send_to_WEB(chec=220)
 	COUNT_SHOT = 0
 	while True:
 		TIME_C = datetime.now()
