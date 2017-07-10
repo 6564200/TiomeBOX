@@ -30,8 +30,10 @@ sudo shutdown -h now
 
 REBOOT:
 sudo crontab -e
->>> 50 3 * * * reboot &>/var/log/reboot.log
->>> 15 0 * * * sudo mv -f /home/pi/TL/DATA/* /mnt/SD/
+>>20 0 * * * sudo reboot
+>>14 0 * * * sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
+>>15 0 * * * sudo mv /home/pi/TL/DATA/* /mnt/SD/
+>>@reboot sudo python /home/pi/TL/send_SSH.py
 
 
 wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh && chmod +x gphoto2-updater.sh && sudo ./gphoto2-updater.sh
@@ -42,31 +44,33 @@ vcgencmd measure_temp - òåìïåðàòóðà
 
 sudo apt-get exiftool
 
-sudo reboot - ïåðåçàãðóçêà
-sudo halt - âûêëþ÷åíèå
-Ctrl+C - âûõîä èç îòêðûòîé êîíñîëüíîé ïðîãðàììû (åñëè íå ïðåäóñìîòðåíî äðóãèõ êëàâèø)
-Shift+Ins - âñòàâèòü òåêñò â êîíñîëü
-Ctrl+Ins - êîïèðîâàòü âûäåëåííûé òåêñò èç êîíñîëè
-df - Ýòà êîìàíäà âûâîäèò ðàçìåð, à òàê æå ñâîáîäíîå è çàíÿòîå ìåñòî íà âñåõ ñìîíòèðîâàííûõ (ïîäêëþ÷åííûõ) ôàéëîâûõ ñèñòåìàõ
-cd - ïåðåõîä â íóæíóþ ïàïêó. Íàïðèìåð cd /home/pi
-dir - ïîêàæåò ñîäåðæèìîå òåêóùåé ïàïêè
-pwd - ïîêàæåò âàøå òåêóùåå ðàñïîëîæåíèè
-date - ïîêàæåò âðåìÿ è äàòó
-cal - ïîêàæåò êàëåíäàðü íà òåêóùèé ìåñÿö
-cal -y - ïîêàæåò êàëåíäàðü íà òåêóùèé ãîä
-wget - ñêà÷àòü ôàéë â òåêóùóþ äèðåêòîðèþ. Íàïðèìåð wget http://mysite.com/myfile.deb
+sudo reboot 
+sudo halt 
+Ctrl+C 
+Shift+Ins 
+Ctrl+Ins 
+df 
+cd 
+dir 
+pwd 
+date 
+cal 
+cal -y 
+wget
 
-ifconfig -a - ïîñìîòðåòü ñåòåâûå íàñòðîéêè
+ifconfig -a 
 
 
-sudo apt-get install [èìÿ ïàêåòà] - óñòàíîâèò íóæíûé ïàêåò
+sudo apt-get install 
 
-htop – äèñïåò÷åð çàäà÷ Óñòàíîâêà: sudo apt-get install htop
-Mc – ôàéëîâûé ìåíåäæåð Óñòàíîâêà: sudo apt-get install mc
+htop
+sudo apt-get install htop
+Mc
+sudo apt-get install mc
 
-sudo apt-get install swig êîìïèëÿòîð
+sudo apt-get install swig
 
-óñòàíàâëèâàåì gphoto2 äëÿ ïèòîíà
+gphoto2 
 sudo apt-get install python3-pip
 sudo apt-get install swig		
 sudo pip-3.2 install gphoto2
@@ -90,21 +94,12 @@ gphoto2 --get-config=/main/imgsettings/imageformat
 
 sudo date -s "Mon Aug  12 20:14:11 UTC 2014"
 
-NANO
-âûäåëåíèå: Alt-A èëè Ctrl-^. 
-ñêîïèðîâàòü â áóôôåð Ctrl-K (èëè F9). 
-â áóôôåð îáìåíà — êîìáèíàöèÿ Alt-6 
-èç áóôôåðà îáìåíà — Ctrl-U èëè F10
-Ctrl-K ïðè îòñóòñòâèè âûäåëåíèÿ óäàëÿåò ñòðîêó. 
-âñòàâèòü ñ ïîìîùüþ Ctrl-U.
-Alt-T, ñòèðàþùàÿ âñ¸ îò êóðñîðà è äî êîíöà ôàéëà 
-
-=============================================================òî÷êà äîñòóïà
+=============================================================
 sudo apt-get install dnsmasq
 sudo apt-get install hostapd
 nano /etc/dhcpcd.conf
 	denyinterfaces wlan0
-				äîáîâëÿòü âûøå interface lines 
+				add interface lines 
 sudo nano /etc/network/interfaces
 allow-hotplug wlan0  
 iface wlan0 inet static  
@@ -206,11 +201,7 @@ install pip for python
 
 
 =================================================
-sudo apt-get install python-dev
-sudo apt-get install libjpeg-dev
-sudo apt-get install libjpeg8-dev
-sudo apt-get install libpng3
-sudo apt-get install libfreetype6-dev
+sudo apt-get install python-dev libjpeg-dev libjpeg8-dev libfreetype6 libfreetype6-dev zlib1g-dev libpng3
 sudo pip install Pillow
 =================================================
 sudo apt-get install lirc
@@ -246,6 +237,11 @@ sudo nano /etc/modprobe.d/raspi-blacklist.conf
 blacklist btbcm
 blacklist hci_uart
 =================================================
+
+SSH
+sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
+pip install cryptography
+pip install paramiko
 
 
 
