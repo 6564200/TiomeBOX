@@ -5,6 +5,8 @@ clear cache sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
 sudo systemctl stop ntp
 sudo systemctl disable ntp
 
+sudo pip install -U pip
+
 match = re.search('^Hardware\s+:\s+(\w+)$', cpuinfo, flags=re.MULTILINE | re.IGNORECASE)
 
 sudo raspi-config 
@@ -15,7 +17,7 @@ sudo apt-get upgrade
 sudo apt-get install exfat-fuse
 sudo mkdir /mnt/SD
 sudo mount /dev/sdb1 /mnt/SD
-blkid  ---> "043B-7C40" TYPE="exfat" PARTUUID="c951cc7b-01"
+sudo blkid  ---> "043B-7C40" TYPE="exfat" PARTUUID="c951cc7b-01"
 sudo nano /etc/fstab   
 
 >>>> UUID=4281-7FD7  /mnt/SD         exfat   defaults,auto,umask=000,rw 0 0
@@ -37,10 +39,10 @@ sudo crontab -e
 
 
 wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh && chmod +x gphoto2-updater.sh && sudo ./gphoto2-updater.sh
-cat /proc/cpuinfo - èíôî
+cat /proc/cpuinfo 
 cat /proc/partitions
 cat /proc/version
-vcgencmd measure_temp - òåìïåðàòóðà
+vcgencmd measure_temp 
 
 sudo apt-get exiftool
 
