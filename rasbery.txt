@@ -7,10 +7,10 @@ sudo systemctl disable ntp
 
 match = re.search('^Hardware\s+:\s+(\w+)$', cpuinfo, flags=re.MULTILINE | re.IGNORECASE)
 
-sudo raspi-config - ïåðâîíà÷àëüíàÿ íàñòðîéêà
+sudo raspi-config 
 
-sudo apt-get update - îáíîâèò ñïèñîê ïàêåòîâ ñ ðåïîçèòàðèÿ
-sudo apt-get upgrade - îáíîâèò óñòàíîâëåííûå ïàêåòû
+sudo apt-get update 
+sudo apt-get upgrade 
 
 sudo apt-get install exfat-fuse
 sudo mkdir /mnt/SD
@@ -244,7 +244,9 @@ sudo pip install cryptography
 sudo pip install paramiko
 
 
-
+Pillow
+sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+sudo pip install Pillow
 
 
 
