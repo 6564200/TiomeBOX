@@ -55,7 +55,7 @@ def SSH():
 
 	host = 'ssh.pythonanywhere.com'
 	user = 'kazmaz'
-	secret = 'mmolgmmolg'
+	secret = '2oldpassword'
 	port = 22
 
 	#client = paramiko.SSHClient()
