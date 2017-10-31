@@ -242,6 +242,7 @@ blacklist hci_uart
 
 SSH
 sudo apt-get install build-essential libssl-dev libffi-dev python3-dev
+sudo pip install --upgrade setuptools
 sudo pip install cryptography
 sudo pip install paramiko
 
