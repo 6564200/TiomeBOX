@@ -251,7 +251,7 @@ Pillow
 sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
 sudo pip install Pillow
 
-
+Look for hosts.deny in the admin app .... applications/admin/private/hosts.deny
 
 
 
