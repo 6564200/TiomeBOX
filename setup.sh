@@ -2,6 +2,7 @@ sudo apt-get update
 sudo apt-get -y upgrade 
 sudo apt-get update 
 sudo apt-get -y install exfat-fuse
+sudo apt-get -y install exiftool
 #sudo mkdir /mnt/SD
 sudo apt-get -y install build-essential 
 sudo apt-get -y install python-dev
