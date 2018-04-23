@@ -1,6 +1,10 @@
 sudo apt-get update 
 sudo apt-get -y upgrade 
 sudo apt-get update 
+
+sudo apt-get -y install git
+git clone https://github.com/6564200/TiomeBOX.git
+
 sudo apt-get -y install exfat-fuse
 sudo apt-get -y install exiftool
 #sudo mkdir /mnt/SD
@@ -12,8 +16,6 @@ sudo pip install Adafruit_Python_DHT
 sudo apt-get -y install htop mc
 sudo apt-get -y install swig
 
-sudo apt-get -y install dnsmasq
-sudo apt-get -y install hostapd
 sudo apt-get -y install python-smbus
 sudo apt-get -y install i2c-tools
 
@@ -34,3 +36,7 @@ sudo apt-get -y install python3-dev
 sudo pip install --upgrade setuptools
 sudo pip install cryptography
 sudo pip install paramiko
+
+wget https://raw.githubusercontent.com/gonzalo/gphoto2-updater/master/gphoto2-updater.sh 
+chmod +x gphoto2-updater.sh 
+sudo ./gphoto2-updater.sh
