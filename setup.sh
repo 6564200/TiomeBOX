@@ -3,14 +3,20 @@ sudo apt-get -y upgrade
 sudo apt-get update 
 
 sudo apt-get -y install git
-git clone https://github.com/6564200/TiomeBOX.git
+#git clone https://github.com/6564200/TiomeBOX.git
 
 sudo apt-get -y install exfat-fuse
 sudo apt-get -y install exiftool
 #sudo mkdir /mnt/SD
 sudo apt-get -y install build-essential 
 sudo apt-get -y install python-dev
-sudo apt-get -y install python pip
+sudo apt-get -y install python-pip
+
+sudo apt-get install libusb-dev
+git clone https://github.com/codazoda/hub-ctrl.c
+cd hub-ctrl.c/
+sudo gcc -o hub-ctrl hub-ctrl.c -lusb
+
 sudo pip install -U pip
 sudo pip install Adafruit_Python_DHT
 sudo apt-get -y install htop mc
