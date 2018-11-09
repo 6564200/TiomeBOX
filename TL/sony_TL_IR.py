@@ -8,8 +8,8 @@ import logging
 import os
 import sys
 
-START_TIME = time(2,30,00)
-STOP_TIME = time(23,55,00)
+START_TIME = time(6,30,00)
+STOP_TIME = time(23,30,00)
 ISO = 100
 CAM_ID = 2
 INTERVAL = 30
@@ -33,25 +33,63 @@ def SetUp():
 
 
 def chek_USB():
-	proc = subprocess.Popen('sudo blkid', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	sleep(10)
+	proc = subprocess.Popen('lsusb', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	proc.wait()
 	res = proc.communicate()
-	if res[0].find("exfat") == -1:
-		printlog('Chek USB: OFF') 
+	if res[0].find("Huawei") == -1:
+		printlog('USB: OFF') 
 		return False
 	else: 
-		printlog('Chek USB: ON')
+		printlog('USB: ON')
 		return True
 
 def DOWN_USB():
 	 printlog('DOWN USB')
-         proc = subprocess.Popen('sudo /home/pi/hub-ctrl.c/hub-ctrl -h 0 -P 2 -p 0', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-         proc.wait()
-         sleep(4)
+	 co = 0
+         while chek_USB():
+	     co += 1
+	     printlog(str(co))
+	     for cc in range(0,co):
+	        proc = subprocess.Popen('sudo /home/pi/hub-ctrl.c/hub-ctrl -h 0 -P 2 -p 0', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                proc.wait()
+             sleep(10)
+
          proc = subprocess.Popen('irsend SEND_ONCE Minolta-Sony-RMT-DSLR1 Play', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
          proc.wait()
-         sleep(4)
-         
+         sleep(5)
+
+def UP_USB():
+	printlog('UP USB')
+        co = 0
+        while not chek_USB():
+             co += 1
+             printlog(str(co))
+             for cc in range(0,co):
+                proc = subprocess.Popen('sudo /home/pi/hub-ctrl.c/hub-ctrl -h 0 -P 2 -p 1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                proc.wait()
+             sleep(5)
+
+	proc = subprocess.Popen('sudo mount /dev/sda1 /mnt/SONY', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+	sleep(5)
+
+def mount_SONY():
+        proc = subprocess.Popen('ls -c /mnt/SONY/DCIM/', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc.wait()
+	folder_new = proc.communicate()[0][:8]
+	printlog(folder_new)
+	proc = subprocess.Popen('ls -c /mnt/SONY/DCIM/'+folder_new, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc.wait()
+	file_new = proc.communicate()[0][:12]
+	printlog(file_new)
+	proc = subprocess.Popen('cp //mnt//SONY//DCIM//'+folder_new+'//'+file_new+' '+'//home//pi//TL//fin_img.jpg', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	proc.wait()
+	sleep(7)
+	proc = subprocess.Popen('sudo umount /dev/sda1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        proc.wait()
+	sleep(1)
+
 def init_time():
 	import ctypes
 	import ctypes.util
@@ -61,20 +99,15 @@ def init_time():
 		proc = subprocess.Popen('sudo umount /dev/sda1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		proc.wait()
 		printlog('Umount USB')
-		sleep(3)
+		sleep(4)
 		DOWN_USB()
 	
 	printlog('shot image fot time')
 	proc = subprocess.Popen('irsend SEND_ONCE Minolta-Sony-RMT-DSLR1 S', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	proc.wait()
 	sleep(50)
-	printlog('on USB')
-	proc = subprocess.Popen('sudo /home/pi/hub-ctrl.c/hub-ctrl -h 0 -P 2 -p 1', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-	proc.wait()
-	sleep(4)
-	proc = subprocess.Popen('sudo mount /dev/sda1 /mnt/SONY', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        proc.wait()
-	sleep(4)
+	UP_USB()
+
 	proc = subprocess.Popen('ls -c /mnt/SONY/DCIM/', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 	proc.wait()
 	folder_new = proc.communicate()[0][:8]
@@ -149,7 +182,7 @@ def chek_time_work():
 def main():
 
 	printlog("Start program")
-	#sleep(120)
+	sleep(5)
 	SetUp()
 	
 	TIMES = init_time()
@@ -172,24 +205,14 @@ def main():
                                         flag = True
                                         while TIME_I < DELTA:
                                                 TIME_I = datetime.now() - TIME_C
-                                                #sys.stdout.write("\r%s" % str(DELTA-TIME_I))
-                                                #sys.stdout.flush()
-                                                if TIME_I.total_seconds() < 10 and flag:
-                                                        flag = False
-                                                        # time for work
-                                                if (DELTA.seconds - (datetime.now() - TIME_C).seconds) > 2:
-                                                        printlog( "sleep " + str(DELTA.seconds - (datetime.now() - TIME_C).seconds - 1))
+                                                if (DELTA.seconds - (datetime.now() - TIME_C).seconds) > 1:
                                                         sleep(DELTA.seconds - (datetime.now() - TIME_C).seconds - 1)
                                                         
-                                        #sys.stdout.write("\r  \r\n") # clean up
                 else:
-				printlog(str(INTERVAL))
-				
-                                sleep(INTERVAL)
-                #else:
-                #        printlog("RELAX VIHODNOY")
-                #        sleep(3550)
-
+                        		sleep(INTERVAL)
+					if TIME_C.time() > STOP_TIME:
+						printlog("Stop program") 
+						break
 		
 
 if __name__ == "__main__" :
