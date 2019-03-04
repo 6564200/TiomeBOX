@@ -54,7 +54,7 @@ def DOWN_USB():
 	        proc = subprocess.Popen('sudo /home/pi/hub-ctrl.c/hub-ctrl -h 0 -P 2 -p 0', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 proc.wait()
              sleep(10)
-
+         sleep(5)
          proc = subprocess.Popen('irsend SEND_ONCE Minolta-Sony-RMT-DSLR1 Play', shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
          proc.wait()
          sleep(5)
