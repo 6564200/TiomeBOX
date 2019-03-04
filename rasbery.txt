@@ -1,5 +1,11 @@
 git clone https://github.com/6564200/TiomeBOX.git
 
+https://github.com/JaeCholJeon/hub-ctrl.git
+sudo apt-get install libusb-dev
+gcc -o hub-ctrl hub-ctrl.c -lusb -std=c99
+
+sudo apt-get install python-mechanize
+
 clear cache sudo sh -c 'echo 1 >/proc/sys/vm/drop_caches'
 
 sudo systemctl stop ntp
