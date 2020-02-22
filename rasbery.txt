@@ -260,10 +260,17 @@ sudo pip install Pillow
 
 Look for hosts.deny in the admin app .... applications/admin/private/hosts.deny
 
+ORangePi Zero
 
+sudo dpkg-reconfigure tzdata
+dpkg-reconfigure locales -> ru_RU.UTF-8 UTF-8
+sudo nano /etc/default/keyboard
+XKBMODEL="pc105"
+XKBLAYOUT="us,ru"
+XKBVARIANT=","
+XKBOPTIONS="grp:alt_shift_toggle,grp_led:scroll"
 
-
-
+sudi nmtui-connect SSID_NAME
 
 
 
