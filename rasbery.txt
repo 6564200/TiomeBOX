@@ -272,7 +272,9 @@ XKBOPTIONS="grp:alt_shift_toggle,grp_led:scroll"
 
 sudi nmtui-connect SSID_NAME
 
-
+/etc/modules
+sun4i_codec
+sun8i_codec_analog
 
 
 
